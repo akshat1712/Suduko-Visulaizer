@@ -1,3 +1,10 @@
+import PySimpleGUI as sg
+   
+def resetboard(board):
+    for i in range(9):
+        for j in range(9):
+            board[i][j]=-1;
+
 def check_column( board, y,val):
     for i in range(9):
         if( board[i][y]==val):
@@ -47,20 +54,51 @@ def solve( board,x,y):
                 return True
             board[x][y]=-1
     return False
-
+      
 board =[
-    [-1,-1,7,1,-1,-1,-1,5,-1],
-    [-1,6,-1,-1,-1,-1,-1,7,-1],
-    [-1,-1,-1,7,-1,-1,3,-1,4],
-    [3,-1,-1,4,-1,-1,5,2,-1],
-    [-1,2,-1,8,-1,5,-1,4,-1],
-    [-1,8,4,-1,-1,3,-1,-1,6],
-    [1,-1,5,-1,-1,2,-1,-1,-1],
-    [-1,7,-1,-1,-1,-1,-1,6,-1],
-    [-1,4,-1,-1,-1,9,1,-1,-1]
+    [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    [-1,-1,-1,-1,-1,-1,-1,-1,-1]
 ]
 
-if( solve( board,0,0)==False ):
-    print("The Suduko board is not solvable")
-else:
-    printsudoku(board)
+sg.theme('BluePurple')
+   
+# input_rows = [[sg.Input(size=(5,1), pad=(1,1)) for col in range(9)] for row in range(9)]   
+
+layout = [[sg.Text('Enter value of Sudoku cell here:'),
+           sg.Text(size=(15,1), key='-OUTPUT-')],
+          [[sg.Input(size=(5,1), pad= ( (1,1) if ( (col+1)%3!=0 & (row+1)%3!=0) else (8,8) ), key="{row}-{col}") for col in range(9)] for row in range(9)],
+          [sg.Button('Solve'), sg.Button('Reset'),sg.Button('Exit')]]
+  
+window = sg.Window('Sudoku Solver', layout)
+  
+while True:
+    event, values = window.read()
+    # print(event, values)
+      
+    if event in  (None, 'Exit'):
+        break
+    elif event == 'Solve':
+        for row in range(9):
+            for col in range(9):
+                # if( values["{row}-{col}"]!=""):
+                    # board=int(values["{row}-{col}"])
+                print( values["{row}-{col}"])
+        if( solve( board,0,0)==False ):
+            print("The Suduko board is not solvable")
+        else:
+            printsudoku(board)
+    elif event=='Reset':
+        resetboard(board);
+
+window.close()
+
+
+
+
