@@ -73,7 +73,7 @@ sg.theme('BluePurple')
 
 layout = [[sg.Text('Enter value of Sudoku cell here:'),
            sg.Text(size=(15,1), key='-OUTPUT-')],
-          [[sg.Input(size=(5,1), pad= ( (1,1) if ( (col+1)%3!=0 & (row+1)%3!=0) else (8,8) ), key="{row}-{col}") for col in range(9)] for row in range(9)],
+          [[sg.Input(size=(5,1), pad= ( (1,1) if ( (col+1)%3!=0 & (row+1)%3!=0) else (8,8) ), key="-{}-{}-".format(row,col)) for col in range(9)] for row in range(9)],
           [sg.Button('Solve'), sg.Button('Reset'),sg.Button('Exit')]]
   
 window = sg.Window('Sudoku Solver', layout)
@@ -82,14 +82,14 @@ while True:
     event, values = window.read()
     # print(event, values)
       
-    if event in  (None, 'Exit'):
+    if event =="Exit" or event==sg.WIN_CLOSED:
         break
     elif event == 'Solve':
         for row in range(9):
             for col in range(9):
-                # if( values["{row}-{col}"]!=""):
-                    # board=int(values["{row}-{col}"])
-                print( values["{row}-{col}"])
+                if( values["-{}-{}-".format(row,col)]!=""):
+                    board[row][col]=int(values["-{}-{}-".format(row,col)])
+        # printsudoku(board)
         if( solve( board,0,0)==False ):
             print("The Suduko board is not solvable")
         else:
