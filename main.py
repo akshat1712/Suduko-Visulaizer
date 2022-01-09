@@ -1,9 +1,16 @@
+from PySimpleGUI import PySimpleGUI
+
+
+# Importing PySimpleGUI as sg for UI & UX
 import PySimpleGUI as sg
-   
-def resetboard(board):
+
+# Functions to perform specific tasks like solving,reseting etc.
+ 
+def resetboard(board,window):
     for i in range(9):
         for j in range(9):
             board[i][j]=-1;
+            window["-{}-{}-".format(i,j)].update("")
 
 def check_column( board, y,val):
     for i in range(9):
@@ -26,11 +33,12 @@ def check_subgrid(board,val,x,y):
                 return False
     return True
 
-def printsudoku(board):
+def printsudoku(board,window):
     print("  - - - - - - - - - - - - - -")
     for i in range(0,9):
         print(" | ",end="")
         for j in range(0,9):
+            window["-{}-{}-".format(i,j)].update(str( board[i][j]))
             print(board[i][j],end=" ")
             if( (j+1)%3==0 ):
                 print(" | ",end="")
@@ -38,6 +46,17 @@ def printsudoku(board):
         if( (i+1)%3==0):
             print("  - - - - - - - - - - - - - -")
 
+def gapsize( row,col):
+    if( row%3!=0 & col%3!=0):
+        return (1,1)
+    elif( row%3==0 & col%3==0):
+        return (6,6)
+    elif ( row%3==0):
+        return (1,6)
+    else:
+        return (6,1)
+
+# Using Backtracking algorithm to solve the Sudoku problem
 
 def solve( board,x,y):
     if( x==9):
@@ -54,7 +73,8 @@ def solve( board,x,y):
                 return True
             board[x][y]=-1
     return False
-      
+
+# -1 in the board means that place is empty and we can make a sudoku puzzle by replacing sudoku puzzle by replacing -1 with 1-9 
 board =[
     [-1,-1,-1,-1,-1,-1,-1,-1,-1],
     [-1,-1,-1,-1,-1,-1,-1,-1,-1],
@@ -67,21 +87,17 @@ board =[
     [-1,-1,-1,-1,-1,-1,-1,-1,-1]
 ]
 
-sg.theme('BluePurple')
-   
-# input_rows = [[sg.Input(size=(5,1), pad=(1,1)) for col in range(9)] for row in range(9)]   
+sg.theme("DarkTeal8")
 
 layout = [[sg.Text('Enter value of Sudoku cell here:'),
            sg.Text(size=(15,1), key='-OUTPUT-')],
-          [[sg.Input(size=(5,1), pad= ( (1,1) if ( (col+1)%3!=0 & (row+1)%3!=0) else (8,8) ), key="-{}-{}-".format(row,col)) for col in range(9)] for row in range(9)],
+          [[sg.Input(size=(5,1), pad= ( gapsize(row+1,col+1) ), key="-{}-{}-".format(row,col)) for col in range(9)] for row in range(9)],
           [sg.Button('Solve'), sg.Button('Reset'),sg.Button('Exit')]]
   
 window = sg.Window('Sudoku Solver', layout)
   
 while True:
     event, values = window.read()
-    # print(event, values)
-      
     if event =="Exit" or event==sg.WIN_CLOSED:
         break
     elif event == 'Solve':
@@ -89,16 +105,11 @@ while True:
             for col in range(9):
                 if( values["-{}-{}-".format(row,col)]!=""):
                     board[row][col]=int(values["-{}-{}-".format(row,col)])
-        # printsudoku(board)
         if( solve( board,0,0)==False ):
             print("The Suduko board is not solvable")
         else:
-            printsudoku(board)
+            printsudoku(board,window)
     elif event=='Reset':
-        resetboard(board);
+        resetboard(board,window);
 
 window.close()
-
-
-
-
