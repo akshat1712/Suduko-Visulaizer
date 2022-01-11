@@ -47,14 +47,8 @@ def printsudoku(board,window):
             print("  - - - - - - - - - - - - - -")
 
 def gapsize( row,col):
-    if( row%3!=0 & col%3!=0):
-        return (1,1)
-    elif( row%3==0 & col%3==0):
-        return (6,6)
-    elif ( row%3==0):
-        return (1,6)
-    else:
-        return (6,1)
+    return (3,3)
+# Have to make this much better to easily distinguish between sub-grids
 
 # Using Backtracking algorithm to solve the Sudoku problem
 
