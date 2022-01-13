@@ -1,6 +1,5 @@
 from PySimpleGUI import PySimpleGUI
 
-
 # Importing PySimpleGUI as sg for UI & UX
 import PySimpleGUI as sg
 
@@ -46,10 +45,14 @@ def printsudoku(board,window):
         if( (i+1)%3==0):
             print("  - - - - - - - - - - - - - -")
 
-def gapsize( row,col):
-    return (3,3)
-# Have to make this much better to easily distinguish between sub-grids
-
+def get_color(row,col):
+    if(  (row<=3 or row>6 ) and ( col<=3 or col>6 ) ):
+        return "#760000"
+    elif ( ( row>3 and row<=6 ) and ( col>3 and col<=6)):
+        return "#760000"
+    else :
+        return "#001670"
+    
 # Using Backtracking algorithm to solve the Sudoku problem
 
 def solve( board,x,y):
@@ -82,10 +85,9 @@ board =[
 ]
 
 sg.theme("DarkTeal8")
-
 layout = [[sg.Text('Enter value of Sudoku cell here:'),
            sg.Text(size=(15,1), key='-OUTPUT-')],
-          [[sg.Input(size=(5,1), pad= ( gapsize(row+1,col+1) ), key="-{}-{}-".format(row,col)) for col in range(9)] for row in range(9)],
+          [[sg.Input(size=(5,45), pad= ( 4,4 ), key="-{}-{}-".format(row,col), background_color=get_color(row+1,col+1)) for col in range(9)] for row in range(9)],
           [sg.Button('Solve'), sg.Button('Reset'),sg.Button('Exit')]]
   
 window = sg.Window('Sudoku Solver', layout)
